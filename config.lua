@@ -1,6 +1,8 @@
 if(not eXPeritia or not LibStub) then return nil end
 
 local panel = CreateFrame("Frame", nil, UIParent)
+panel.name = "eXPeritia"
+InterfaceOptions_AddCategory(panel)
 
 local function UpdateSliderValue(self) self.val:SetFormattedText("%.0f", self:GetValue()) end
 
@@ -13,10 +15,7 @@ local function OnMouseUp(self)
 	self:StopMovingOrSizing()
 end
 
-function panel:Build()
-	self.name = "eXPeritia"
-	InterfaceOptions_AddCategory(self)
-	
+panel:SetScript("OnShow", function(self)
 	local title, subtitle = LibStub("tekKonfig-Heading").new(self, "eXPeritia "..GetAddOnMetadata("eXPeritia", "Version"), GetAddOnMetadata("eXPeritia", "Notes"))
 
 	local width, _, cont = LibStub("tekKonfig-Slider").new(self, "Width", 100, 2000, "TOPLEFT", subtitle, "BOTTOMLEFT", 0, -20)
@@ -37,14 +36,14 @@ function panel:Build()
 
 	local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 	color = format("|cff%02x%02x%02x", color.r*255, color.g*255, color.b*255)
-	
+
 	local classcolor = LibStub("tekKonfig-Checkbox").new(self, 26, color.."Class|r colored indicators", "TOPLEFT", height, "BOTTOMLEFT", 0, -30)
 	classcolor.tiptext = "Color the indicators based on your class"
 	self.classColor = classcolor
-	
+
 	self:SetScript("OnShow", self.OnShow)
 	self:SetScript("OnHIde", self.OnHide)
-end
+end)
 
 function panel:OnShow()
 	self.classColor:SetChecked(eXPeritia.db.ClassColor)
@@ -70,8 +69,6 @@ function panel:okay()
 	eXPeritia.db.Height = self.height:GetValue()
 	eXPeritia:ApplyOptions()
 end
-
-panel:Build()
 
 SlashCmdList['EXPERITIA'] = function(msg)
 	if(msg == "hide" or (msg == "toggle" and eXPeritia:IsShown())) then
