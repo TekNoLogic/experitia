@@ -3,16 +3,7 @@
 ]]
 
 local eXPeritia = CreateFrame("Frame", "eXPeritia", UIParent)
-
---[[ Default Configuration (used for first time ingame]]
-defaults = {
-	['Width'] = 640,			-- Width of bar
-	['Height'] = 30,			-- Height of bar
-	['Color'] = { r = .9, g = .5, b = 0 },	-- Indicator color
-	['ClassColors'] = true		-- Use class colored indicators
-}
 eXPeritia:SetPoint("TOP", UIParent, "TOP", 0, -100)	-- Position of bar
---[[ Configuration end ]]
 
 local LargeValue = function(value)
 	if(value > 999 or value < -999) then
@@ -68,9 +59,6 @@ eXPeritia:RegisterEvent("PLAYER_LOGIN")
 eXPeritia:Hide()
 
 function eXPeritia:ApplyOptions()
-	if(not eXPeritiaDB) then eXPeritiaDB = defaults else defaults = nil end
-	if(not self.db) then self.db = eXPeritiaDB end
-
 	local color
 	if(self.db.ClassColor) then
 		color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
@@ -105,7 +93,16 @@ end
 local fadeIn = { mode = "IN", timeToFade = 0.2 }
 
 function eXPeritia:Update(event)
-	if(event == "PLAYER_LOGIN") then return self:ApplyOptions() end
+	if(event == "PLAYER_LOGIN") then
+		eXPeritiaDB = eXPeritiaDB or {
+			['Width'] = 640,			-- Width of bar
+			['Height'] = 30,			-- Height of bar
+			['Color'] = { r = .9, g = .5, b = 0 },	-- Indicator color
+			['ClassColors'] = true		-- Use class colored indicators
+		}
+		self.db = eXPeritiaDB
+		return self:ApplyOptions()
+	end
 
 	min, max, rest = UnitXP("player"), UnitXPMax("player"), GetXPExhaustion()
 
