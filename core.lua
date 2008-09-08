@@ -34,9 +34,12 @@ bgright:SetPoint("TOPRIGHT", 4, 0)
 bgright:SetPoint("BOTTOMLEFT", eXPeritia, "BOTTOM", 0, 0)
 eXPeritia.bgRight = bgright
 
-eXPeritia.Indicator = eXPeritia:NewIndicator(1)
-eXPeritia.Last = eXPeritia:NewIndicator(1)
-eXPeritia.Rest = eXPeritia:NewIndicator(1)
+eXPeritia.Indicator = eXPeritia:CreateTexture(nil, "OVERLAY")
+eXPeritia.Last = eXPeritia:CreateTexture(nil, "OVERLAY")
+eXPeritia.Rest = eXPeritia:CreateTexture(nil, "OVERLAY")
+eXPeritia.Indicator:SetWidth(1)
+eXPeritia.Last:SetWidth(1)
+eXPeritia.Rest:SetWidth(1)
 
 local textPercent = eXPeritia:CreateFontString(nil, "OVERLAY")
 textPercent:SetFont("Fonts\\FRIZQT__.TTF", 14)
@@ -128,12 +131,6 @@ function eXPeritia:Update(event)
 		UIFrameFade(self, fadeIn)
 		self:Show()
 	end
-end
-
-function eXPeritia:NewIndicator(width)
-	local ind = self:CreateTexture(nil, "OVERLAY")
-	ind:SetWidth(width)
-	return ind
 end
 
 function eXPeritia:Move(ind, percent)
