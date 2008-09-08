@@ -7,15 +7,6 @@ InterfaceOptions_AddCategory(panel)
 panel:SetScript("OnShow", function(self)
 	local function UpdateSliderValue(self) self.val:SetFormattedText("%.0f", self:GetValue()) end
 
-	local function OnMouseDown(self)
-		self:ClearAllPoints()
-		self:StartMoving()
-	end
-
-	local function OnMouseUp(self)
-		self:StopMovingOrSizing()
-	end
-
 	local title, subtitle = LibStub("tekKonfig-Heading").new(self, "eXPeritia "..GetAddOnMetadata("eXPeritia", "Version"), GetAddOnMetadata("eXPeritia", "Notes"))
 
 	local width, _, cont = LibStub("tekKonfig-Slider").new(self, "Width", 100, 2000, "TOPLEFT", subtitle, "BOTTOMLEFT", 0, -20)
@@ -41,22 +32,22 @@ panel:SetScript("OnShow", function(self)
 	classcolor.tiptext = "Color the indicators based on your class"
 	self.classColor = classcolor
 
+	eXPeritia:SetScript("OnDragStart", eXPeritia.StartMoving)
+	eXPeritia:SetScript("OnDragStop", eXPeritia.StopMovingOrSizing)
+	eXPeritia:SetMovable(true)
+
 	local function OnShow(self)
 		self.classColor:SetChecked(eXPeritia.db.ClassColor)
 		self.width:SetValue(eXPeritia.db.Width)
 		self.height:SetValue(eXPeritia.db.Height)
 		eXPeritia:SetAlpha(1)
 		eXPeritia:Show()
-		eXPeritia:EnableMouse(true)
-		eXPeritia:SetScript("OnMouseDown", OnMouseDown)
-		eXPeritia:SetScript("OnMouseUp", OnMouseUp)
+		eXPeritia:RegisterForDrag("LeftButton")
 	end
 	self:SetScript("OnShow", OnShow)
 	self:SetScript("OnHide", function(self)
 		eXPeritia:Hide()
-		eXPeritia:EnableMouse(nil)
-		eXPeritia:SetScript("OnMouseDown", nil)
-		eXPeritia:SetScript("OnMouseUp", nil)
+		eXPeritia:RegisterForDrag(nil)
 	end)
 
 	OnShow(self)
